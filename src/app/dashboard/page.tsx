@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Layout from '@/components/Layout';
-import AgentPanel from '@/components/AgentPanel';
+import AgentDashboard from '@/components/AgentDashboard';
+import type { User } from '@supabase/supabase-js';
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -35,8 +36,11 @@ export default function DashboardPage() {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-bold mb-4">Welcome, {user.email}</h1>
-      <AgentPanel />
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Welcome back, CEO</h1>
+        <p className="text-gray-600">{user.email}</p>
+      </div>
+      <AgentDashboard />
     </Layout>
   );
 }

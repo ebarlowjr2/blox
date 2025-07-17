@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const reply = completion.choices[0]?.message?.content || 'No reply generated.';
     return NextResponse.json({ reply });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('OpenAI API error:', error);
     return NextResponse.json({ error: 'Failed to fetch AI response.' }, { status: 500 });
   }

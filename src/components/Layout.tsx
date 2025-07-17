@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const navItems = [
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Integrations', href: '/dashboard/integrations' },
-  { name: 'Settings', href: '/dashboard/settings' },
-  { name: 'Agent', href: '/dashboard/agent' },
+  { name: '🏠 Dashboard', href: '/dashboard' },
+  { name: '🤖 Agents', href: '/dashboard/agents' },
+  { name: '🔗 Integrations', href: '/dashboard/integrations' },
+  { name: '⚙️ Settings', href: '/dashboard/settings' },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -49,7 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 bg-white p-6">{children}</main>
+      <main className="flex-1 bg-gray-50 p-6">{children}</main>
     </div>
   );
 }
