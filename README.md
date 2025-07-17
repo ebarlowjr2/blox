@@ -2,7 +2,31 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### 1. Configure Supabase
+
+Before running the application, you need to set up your Supabase credentials:
+
+1. Go to [https://supabase.com/dashboard](https://supabase.com/dashboard)
+2. Create a new project or select an existing one
+3. Navigate to **Settings > API**
+4. Copy your **Project URL** and **anon/public key**
+5. Update the `.env.local` file with your actual credentials:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=https://your-actual-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-actual-anon-key-here
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+### 2. Install Dependencies and Run
+
+First, install the dependencies:
+
+```bash
+npm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
@@ -19,6 +43,17 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Authentication
+
+This application uses Supabase for authentication with magic link email login:
+
+1. Users enter their email on the login page
+2. Supabase sends a magic link to their email
+3. Clicking the link authenticates the user and redirects to the dashboard
+4. The middleware protects dashboard routes and redirects unauthenticated users to login
+
+**Important**: Magic link authentication requires real Supabase credentials. The placeholder values in `.env.local` will not work for actual authentication.
 
 ## Learn More
 
