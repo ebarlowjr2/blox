@@ -162,8 +162,8 @@ export default function AgentDashboard() {
     <div className="space-y-6">
       {/* Dashboard Header */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 text-white">
-        <h1 className="text-3xl font-bold mb-2">🧠 BLOX Agent Command Center</h1>
-        <p className="text-blue-100 mb-4">Your AI workforce at a glance</p>
+        <h1 className="text-3xl font-bold mb-2">🧠 B.L.O.X Agent Command Center</h1>
+        <p className="text-blue-100 mb-4">Barlow Logic Operations Xecutive - Your AI CEO</p>
         <div className="flex space-x-6">
           <div className="bg-white/20 rounded-lg p-3">
             <div className="text-2xl font-bold">{onlineAgents}/{totalAgents}</div>
