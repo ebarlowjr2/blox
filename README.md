@@ -55,6 +55,17 @@ This application uses Supabase for authentication with magic link email login:
 
 **Important**: Magic link authentication requires real Supabase credentials. The placeholder values in `.env.local` will not work for actual authentication.
 
+## N8N AI CEO Integration
+
+The BLOX frontend integrates with your self-hosted N8N AI CEO. To configure:
+
+1. Ensure your N8N agent is running and accessible
+2. Add the N8N agent URL to your `.env.local`:
+   ```
+   N8N_AGENT_URL=http://your-n8n-agent-url
+   ```
+3. The chat interface will automatically route messages to your N8N workflow
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

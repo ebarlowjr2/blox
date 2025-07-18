@@ -1,23 +1,27 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export async function POST(req: Request) {
   const { message } = await req.json();
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [{ role: 'user', content: message }],
+    const response = await fetch(`${process.env.N8N_AGENT_URL}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message }),
     });
 
-    const reply = completion.choices[0]?.message?.content || 'No reply generated.';
+    if (!response.ok) {
+      throw new Error(`N8N API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const reply = data.response || 'No reply generated.';
+    
     return NextResponse.json({ reply });
   } catch (error: unknown) {
-    console.error('OpenAI API error:', error);
+    console.error('N8N API error:', error);
     return NextResponse.json({ error: 'Failed to fetch AI response.' }, { status: 500 });
   }
 }
