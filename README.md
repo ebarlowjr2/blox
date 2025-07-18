@@ -73,6 +73,30 @@ The BLOX frontend integrates with your self-hosted N8N AI CEO. To configure:
    ```
 3. The chat interface will automatically route messages to your N8N workflow
 
+## Deep Research Capability
+
+BLOX now includes a deep research feature that performs real-time web searches and provides summarized results with sources.
+
+### Setup Requirements
+1. **Brave Search API**: Sign up at [Brave Search API](https://brave.com/search/api/) and get your API key
+2. **OpenAI API** (optional): For enhanced summarization capabilities
+3. **N8N Workflow**: Import the research workflow (see `N8N_RESEARCH_WORKFLOW.md`)
+
+### Environment Variables
+Add these to your `.env.local`:
+```bash
+BRAVE_SEARCH_API_KEY=your-brave-api-key
+OPENAI_API_KEY=your-openai-api-key  # Optional, for better summarization
+```
+
+### Usage
+Users can trigger deep research in several ways:
+- Use keywords: "research AI developments", "search for latest news"
+- Use slash commands: "/research quantum computing", "/search climate change"
+- Ask explicitly: "Can you find information about..."
+
+The system will automatically detect research requests and return comprehensive summaries with source links.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

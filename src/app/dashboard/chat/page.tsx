@@ -8,6 +8,11 @@ interface Message {
   content: string;
   sender: 'user' | 'blox';
   timestamp: Date;
+  sources?: Array<{
+    title: string;
+    url: string;
+    description: string;
+  }>;
 }
 
 export default function ChatPage() {
@@ -61,6 +66,7 @@ export default function ChatPage() {
         content: data.reply || 'I apologize, but I\'m having trouble processing your request right now.',
         sender: 'blox',
         timestamp: new Date(),
+        sources: data.sources || []
       };
 
       setMessages(prev => [...prev, bloxMessage]);
@@ -122,6 +128,26 @@ export default function ChatPage() {
                     </div>
                   )}
                   <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  {message.sources && message.sources.length > 0 && (
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <p className="text-xs font-semibold text-gray-600 mb-2">Sources:</p>
+                      <div className="space-y-2">
+                        {message.sources.map((source, index) => (
+                          <div key={index} className="text-xs">
+                            <a 
+                              href={source.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 font-medium"
+                            >
+                              {source.title}
+                            </a>
+                            <p className="text-gray-500 mt-1">{source.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <p className={`text-xs mt-2 ${
                     message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
                   }`}>

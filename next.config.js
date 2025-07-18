@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
   trailingSlash: true,
   images: {
     unoptimized: true
@@ -10,9 +9,8 @@ const nextConfig = {
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     N8N_AGENT_URL: process.env.N8N_AGENT_URL,
-  },
-  experimental: {
-    esmExternals: false
+    BRAVE_SEARCH_API_KEY: process.env.BRAVE_SEARCH_API_KEY,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   }
 }
 
