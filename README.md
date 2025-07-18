@@ -55,6 +55,13 @@ This application uses Supabase for authentication with magic link email login:
 
 **Important**: Magic link authentication requires real Supabase credentials. The placeholder values in `.env.local` will not work for actual authentication.
 
+**Supabase Configuration for Deployment:**
+When deploying to a production server, you must update your Supabase project settings:
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard)
+2. Select your project → Authentication → URL Configuration
+3. Add your production URL to "Redirect URLs": `http://your-server-url/auth/callback`
+4. For this deployment, add: `http://3.137.178.229/auth/callback`
+
 ## N8N AI CEO Integration
 
 The BLOX frontend integrates with your self-hosted N8N AI CEO. To configure:
