@@ -1,8 +1,7 @@
 module.exports = {
   apps: [{
     name: 'blox',
-    script: 'node_modules/.bin/next',
-    args: 'start',
+    script: '.next/standalone/server.js',
     cwd: '/opt/blox',
     env_file: '/opt/blox/.env.production',
     env: {

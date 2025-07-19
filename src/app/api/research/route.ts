@@ -21,11 +21,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Query is required' }, { status: 400 });
     }
 
-    const apiKey = process.env.BRAVE_SEARCH_API_KEY || 'BSAh4rcEMDMWlFPpyVPsSyX-p9lwF1o';
+    const apiKey = process.env.BRAVE_SEARCH_API_KEY;
     
     if (!apiKey) {
       return NextResponse.json({ error: 'Brave Search API key not configured' }, { status: 500 });
     }
+
+    console.log('Research API called with query:', query);
+    console.log('Using API key:', apiKey.substring(0, 10) + '...');
 
     const searchResults = await performBraveSearch(query, apiKey);
     const summary = await summarizeResults(query, searchResults);
@@ -37,28 +40,55 @@ export async function POST(req: Request) {
       timestamp: new Date().toISOString()
     });
   } catch (error: unknown) {
-    return NextResponse.json({ error: 'Failed to perform research.' }, { status: 500 });
+    console.error('Research API error:', error);
+    return NextResponse.json({ 
+      error: 'Research API encountered an error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
 
 async function performBraveSearch(query: string, apiKey: string): Promise<BraveSearchResult[]> {
-  const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=3`;
-  
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'X-Subscription-Token': apiKey,
-    },
-  });
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Brave Search API error: ${response.status} - ${errorText}`);
-  }
+  try {
+    const params = new URLSearchParams({
+      q: query,
+      count: '5',
+      mkt: 'en-US',
+      safesearch: 'moderate',
+      textDecorations: 'false',
+      textFormat: 'Raw'
+    });
+    
+    const url = `https://api.search.brave.com/res/v1/web/search?${params.toString()}`;
+    
+    console.log('Making Brave API request to:', url);
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Accept-Encoding': 'gzip',
+        'X-Subscription-Token': apiKey,
+      },
+    });
+    
+    console.log('Brave API response status:', response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Brave API error response:', errorText);
+      throw new Error(`Brave Search API error: ${response.status} - ${errorText}`);
+    }
 
-  const data: BraveSearchResponse = await response.json();
-  return data.web?.results || [];
+    const data: BraveSearchResponse = await response.json();
+    console.log('Brave API response data keys:', Object.keys(data));
+    console.log('Number of results:', data.web?.results?.length || 0);
+    
+    return data.web?.results || [];
+  } catch (error) {
+    console.error('Brave API request failed:', error);
+    throw error;
+  }
 }
 
 async function summarizeResults(query: string, results: BraveSearchResult[]): Promise<string> {
