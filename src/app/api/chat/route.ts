@@ -18,6 +18,33 @@ export async function POST(req: Request) {
 
   const isResearchRequest = detectResearchRequest(message);
 
+  if (isResearchRequest) {
+    try {
+      const researchResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/research`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: message }),
+      });
+
+      if (!researchResponse.ok) {
+        throw new Error(`Research API error: ${researchResponse.status}`);
+      }
+
+      const researchData = await researchResponse.json();
+      
+      return NextResponse.json({ 
+        reply: researchData.summary,
+        sources: researchData.sources || [],
+        researchSummary: researchData.summary
+      });
+    } catch (error: unknown) {
+      console.error('Research API error:', error);
+      return NextResponse.json({ error: 'Failed to perform research.' }, { status: 500 });
+    }
+  }
+
   try {
     const response = await fetch(`${process.env.N8N_AGENT_URL}/api/chat`, {
       method: 'POST',
@@ -26,7 +53,7 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({ 
         message,
-        requestType: isResearchRequest ? 'research' : 'chat',
+        requestType: 'chat',
         timestamp: new Date().toISOString()
       }),
     });
