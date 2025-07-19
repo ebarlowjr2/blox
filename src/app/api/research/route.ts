@@ -14,15 +14,20 @@ interface BraveSearchResponse {
 }
 
 export async function POST(req: Request) {
-  const { query } = await req.json();
-
-  if (!query) {
-    return NextResponse.json({ error: 'Query is required' }, { status: 400 });
-  }
-
   try {
-    const searchResults = await performBraveSearch(query);
+    const { query } = await req.json();
+
+    if (!query) {
+      return NextResponse.json({ error: 'Query is required' }, { status: 400 });
+    }
+
+    const apiKey = process.env.BRAVE_SEARCH_API_KEY || 'BSAh4rcEMDMWlFPpyVPsSyX-p9lwF1o';
     
+    if (!apiKey) {
+      return NextResponse.json({ error: 'Brave Search API key not configured' }, { status: 500 });
+    }
+
+    const searchResults = await performBraveSearch(query, apiKey);
     const summary = await summarizeResults(query, searchResults);
     
     return NextResponse.json({
@@ -32,32 +37,24 @@ export async function POST(req: Request) {
       timestamp: new Date().toISOString()
     });
   } catch (error: unknown) {
-    console.error('Research API error:', error);
     return NextResponse.json({ error: 'Failed to perform research.' }, { status: 500 });
   }
 }
 
-async function performBraveSearch(query: string): Promise<BraveSearchResult[]> {
-  const url = new URL('https://api.search.brave.com/res/v1/web/search');
-  url.searchParams.append('q', query);
-  url.searchParams.append('count', '10');
-  url.searchParams.append('offset', '0');
-  url.searchParams.append('mkt', 'en-US');
-  url.searchParams.append('safesearch', 'moderate');
-  url.searchParams.append('textDecorations', 'false');
-  url.searchParams.append('textFormat', 'Raw');
-
-  const response = await fetch(url.toString(), {
+async function performBraveSearch(query: string, apiKey: string): Promise<BraveSearchResult[]> {
+  const url = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=3`;
+  
+  const response = await fetch(url, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',
-      'Accept-Encoding': 'gzip',
-      'X-Subscription-Token': process.env.BRAVE_SEARCH_API_KEY!,
+      'X-Subscription-Token': apiKey,
     },
   });
-
+  
   if (!response.ok) {
-    throw new Error(`Brave Search API error: ${response.status}`);
+    const errorText = await response.text();
+    throw new Error(`Brave Search API error: ${response.status} - ${errorText}`);
   }
 
   const data: BraveSearchResponse = await response.json();
@@ -65,7 +62,7 @@ async function performBraveSearch(query: string): Promise<BraveSearchResult[]> {
 }
 
 async function summarizeResults(query: string, results: BraveSearchResult[]): Promise<string> {
-  if (!process.env.OPENAI_API_KEY) {
+  if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY.trim() === '') {
     return results.slice(0, 3).map(r => `${r.title}: ${r.description}`).join('\n\n');
   }
 
