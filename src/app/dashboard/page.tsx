@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import Layout from '@/components/Layout';
 import AgentPanel from '@/components/AgentPanel';
+import type { User } from '@supabase/supabase-js';
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {
